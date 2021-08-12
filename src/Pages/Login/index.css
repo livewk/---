@@ -1,0 +1,56 @@
+.login{
+  width: 100%;
+  height: 100%;
+  background-image: url("https://z3.ax1x.com/2021/08/11/faqem9.jpg");
+  /* 图片大小*/
+  background-size: 100%,100%;
+}
+
+.login-header{
+  /* 左右排列 */
+  display: flex;
+  /* 上下居中 */
+  align-items: center;
+  height: 100px;
+  background-color: black;
+  /* 透明度 */
+  opacity: 0.6;
+}
+
+
+.login-header img{
+  height: 80px;
+  margin: 0 25px 0 65px;
+}
+
+.login-header h1{
+  font-size: 43px;
+  color: #fff;
+  opacity: 0.6;
+}
+
+.login-section{
+  width: 450px;
+  height: 340px;
+  /* 设置外边距 */
+  margin: 130px auto;
+  /* 设置内边距 */
+  padding: 20px 70px;
+  background-color: #fff;
+  opacity: 0.6;
+}
+
+.login-section h2{
+  /*字体居中*/
+  text-align: center;
+  font-size: 30px;
+  /* 字体的粗细*/
+  font-weight: bold;
+}
+
+.section-div-form{
+  margin: 30px auto;
+}
+.section-div-form button{
+  width: 100%;
+}

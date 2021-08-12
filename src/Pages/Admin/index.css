@@ -1,0 +1,10 @@
+.siderMenu{
+    margin: 2px 0 2px 2px;
+}
+.layoutBody{
+    min-height: 890px;
+}
+.headerHeight{
+    height: 90px;
+    background-color: dodgerblue;
+}
