@@ -22,6 +22,18 @@ const LoginHaixu  = () => {
                         required: true,
                         message: '用户名不能为空',
                     },
+                    {
+                        min:6,
+                        message: '用户名不能小于6位'
+                    },
+                    {
+                        max:12,
+                        message: '用户名不能超过12位'
+                    },
+                    {
+                        pattern:/^[a-zA-Z_@.0-9]+$/,
+                        message: '只能包括字母，数字，下划线， @ ，.'
+                    }
                 ]}
             >
                 <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="请输入用户名" />
@@ -32,7 +44,10 @@ const LoginHaixu  = () => {
                     {
                         required: true,
                         message: '密码不能为空',
-                    },
+                    },                    {
+                        min:6,
+                        message: '用户名不能小于6位'
+                    }
                 ]}
             >
                 <Input
