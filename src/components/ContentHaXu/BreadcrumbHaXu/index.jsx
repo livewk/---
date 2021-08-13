@@ -21,11 +21,15 @@ class BreadcrumbHaXu extends Component {
     }
 
     onChange = activeKey => {
+        // 如果是当前Tag 不用跳转
+        if (activeKey === this.state.activeKey){
+            return
+        }
         // 保存tab的编号
         this.setState({ activeKey });
         const checkedTab = this.state.panes.filter(pane => pane.key === activeKey)
         // 跳转到相应的页面
-        this.props.history.push(checkedTab[0].link)
+        this.props.history.replace(checkedTab[0].link)
     };
 
     onEdit = (targetKey, action) => {

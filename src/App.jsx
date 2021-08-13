@@ -6,7 +6,6 @@ import Admin from "./Pages/Admin";
 
 
 export default class App extends Component {
-
     render() {
         return (
             <Switch>

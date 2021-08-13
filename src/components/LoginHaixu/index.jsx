@@ -1,9 +1,33 @@
-import { Form, Input, Button, Checkbox } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Checkbox, message } from 'antd';
+import { UserOutlined, LockOutlined} from '@ant-design/icons';
+import '../../API'
+import {reqLogin} from "../../API";
+import {Redirect, useHistory} from "react-router-dom";
+import memoryUtils from "../../utils/memoryUtils";
+import storageUtils from "../../utils/storageUtils";
+
 
 const LoginHaixu  = () => {
-    const onFinish = (values) => {
-        console.log('Received values of form: ', values);
+    // 跳转使用
+    const history = useHistory()
+    const onFinish = async (values) => {
+        const {username, password} = values
+        // await等待返回制定结果
+        const result = await reqLogin(username, password)
+        if (result.status === 1){
+            // 提示登陆成功
+            message.success('登陆成功')
+            // 保存user
+            const user = result.user
+            // 将数据保存到内存
+            memoryUtils.user = user
+            // 将数据持久化储存
+            storageUtils.seveUser(user)
+            // 跳转到管理界面 (不需要再回退回到登陆)
+            history.push('/admin')
+        }else{
+            message.error("登入失败")
+        }
     };
 
     return (
@@ -70,5 +94,5 @@ const LoginHaixu  = () => {
         </Form>
     );
 };
-
+// withRouter 将组件装饰成路由
 export default LoginHaixu

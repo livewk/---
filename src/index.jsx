@@ -6,6 +6,11 @@ import App from './App'
 // 引入路由
 import {BrowserRouter} from "react-router-dom";
 import store from "./redux/store";
+import storageUtils from "./utils/storageUtils";
+import memoryUtils from "./utils/memoryUtils";
+
+const user = storageUtils.getUser()
+memoryUtils.user = user
 
 ReactDOM.render(
     <BrowserRouter>

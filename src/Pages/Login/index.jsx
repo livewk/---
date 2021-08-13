@@ -1,9 +1,17 @@
 import React, {Component} from 'react';
 import "./index.css"
 import LoginHaixu from '../../components/LoginHaixu'
+import memoryUtils from "../../utils/memoryUtils";
+import {Redirect} from "react-router-dom";
 
 class Login extends Component {
+
     render() {
+        const {user} = memoryUtils
+        if (user && user.id){
+            // 验证是否登入， 就不在显示登入了
+            return <Redirect to='/admin'/>
+        }
         return (
             <div className="login">
                 <headereader className="login-header">
