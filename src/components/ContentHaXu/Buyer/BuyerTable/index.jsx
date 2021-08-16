@@ -1,5 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import {Table, Button, Popconfirm, Form, AutoComplete} from 'antd';
+import '../../../../configs/buyerTableConstant'
+import {buyerOrderReserveConfig, tableConfig} from "../../../../configs/buyerTableConstant";
 const EditableContext = React.createContext(null);
 
 const EditableRow = ({
@@ -113,10 +115,41 @@ const EditableCell = ({
     return <td {...restProps}>{childNode}</td>;
 };
 
+const confirmType = (type, record)=>{
+    // 确认传送的类型
+    switch (type) {
+        case "":
+        default:
+    }
+
+    return <Popconfirm title="确定要删除该行?" onConfirm={() => this.handleDelete(record.key)}>
+        <a>删除</a>
+    </Popconfirm>
+}
+
 export default class BuyerTable extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            // 数据源
+            dataSource: [
+                {
+                    key:'0',
+                    id: '0',
+                    productName: '请选择名称',
+                    productSize: '请选择规格',
+                    productPlace: '请选择产地',
+                    productUnit: 'kg',
+                    productCount: '0',
+                    productPrice: '0',
+                    remark: '.',
+                },
+
+            ],
+            count: 1,
+        };
+        // 表格的列表头设置
         this.columns = [
             // 列表的头，内容设置
             {
@@ -198,24 +231,7 @@ export default class BuyerTable extends React.Component {
                     ) : null,
             },
         ];
-        this.state = {
-            // 数据源
-            dataSource: [
-                {
-                    key:'0',
-                    id: '0',
-                    productName: '请选择名称',
-                    productSize: '请选择规格',
-                    productPlace: '请选择产地',
-                    productUnit: 'kg',
-                    productCount: '0',
-                    productPrice: '0',
-                    remark: '.',
-                },
 
-            ],
-            count: 1,
-        };
     }
 
     handleDelete = (key) => {
@@ -230,13 +246,13 @@ export default class BuyerTable extends React.Component {
         const newData = {
             key: count,
             id: count,
-            productName: `请点击选择${count}`,
-            productSize: `请点击选择${count}`,
-            productPlace: `请点击选择${count}`,
+            productName: `请点击选择`,
+            productSize: `请点击选择`,
+            productPlace: `请点击选择`,
             productUnit: `kg`,
             productCount: '0',
             productPrice: '0',
-            remark: '情况说明',
+            remark: '.',
         };
         this.setState({
             dataSource: [...dataSource, newData],

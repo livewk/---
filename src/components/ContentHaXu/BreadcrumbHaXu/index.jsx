@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Tabs} from 'antd';
 import {withRouter } from "react-router-dom";
 import store from "../../../redux/store";
-
+import {breadcrumbAction} from "../../../redux/breadcrumb_action";
 const { TabPane } = Tabs;
 
 
@@ -12,7 +12,7 @@ class BreadcrumbHaXu extends Component {
         // 新选项卡ID
         this.newTabIndex = 0;
         // 监听redux 数据，发生改变就执行
-        const panes = store.getState() //[{ title: '首页', key: '1', link: '/IndexPage'}];
+        const panes = store.getState() //[{ title: '首页', key: '1', link: '/home'}];
         this.state = {
             // 选中的tab编号
             activeKey: panes[0].key,
@@ -61,8 +61,9 @@ class BreadcrumbHaXu extends Component {
                 activeKey = panes[0].key
             }
         }
-
-        this.setState({ panes, activeKey });
+        // 删除tag
+        store.dispatch(breadcrumbAction(panes))
+        // this.setState({ panes, activeKey });
         // 跳转到前一个tab的页面
         this.props.history.push(panes[lastIndex].link)
     };

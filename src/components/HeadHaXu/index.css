@@ -5,4 +5,8 @@
 .headerLogo{
     color: azure;
     font-weight: bold;
+    font-size: 30px;
+}
+.rowHeader{
+    align-items: center;
 }

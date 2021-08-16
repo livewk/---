@@ -26,7 +26,7 @@ export default class HeadHaXu extends Component {
         );
 
         return (
-            <Row>
+            <Row className="rowHeader">
                 <Col span={8}><h1 className="headerLogo">海旭恒业管理系统-1.0</h1></Col>
                 <Col span={8}></Col>
                 <Col span={7}>

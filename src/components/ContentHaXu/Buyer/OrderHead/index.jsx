@@ -2,7 +2,31 @@ import React, {Component} from 'react';
 import {DatePicker, Space, Input, AutoComplete, Row, Col, Button} from 'antd';
 import {UserSwitchOutlined} from "@ant-design/icons";
 import moment from 'moment'
+import './index.css'
 
+
+
+const reshow = (type)=>{
+//    头部的显示状态
+    switch (type) {
+        case  1:
+            return null
+        default:
+            return   (
+            <>
+                    <Col className="orderColStyle" span={1}><label>付款状态:</label></Col>
+                    <Col span={3}>
+                        <Input.Group compact style={{width:"70%"}}>
+                            <AutoComplete
+                                style={{ width: '100%' }}
+                                placeholder="请输入或选择姓名"
+                                options={[{ value: '已付款' }, { value: '未付款' }]}
+                            />
+                        </Input.Group>
+                    </Col>
+            </>)
+    }
+}
 
 export default class Index extends Component {
     state = {
@@ -19,20 +43,20 @@ export default class Index extends Component {
         return (
             <>
                 <Row>
-                    <Col span={1}>单号:</Col>
+                    <Col className="orderColStyle" span={1}><label>单号:</label></Col>
                     <Col span={4}>
                         <Input
                             style={{width:"80%"}}
                             value={orderId()}
                             disabled ={false}/>
                     </Col>
-                    <Col span={1}>日期:</Col>
+                    <Col className="orderColStyle" span={1}><label>日期:</label></Col>
                     <Col span={3}>{/*日期*/}
                         <Space direction="vertical">
                             <DatePicker />
                         </Space>
                     </Col>
-                    <Col span={1}>订单类型</Col>
+                    <Col className="orderColStyle" span={1}><label>订单类型:</label></Col>
                     <Col span={3}>
                         <Input.Group compact style={{width:"70%"}}>
                             <AutoComplete
@@ -42,7 +66,7 @@ export default class Index extends Component {
                             />
                         </Input.Group>
                     </Col>
-                    <Col span={1}>申请人:</Col>
+                    <Col className="orderColStyle" span={1}><label>申请人:</label></Col>
                     <Col span={3}>
                         <Input.Group compact  style={{width:"70%"}}>
                         <AutoComplete
@@ -52,7 +76,7 @@ export default class Index extends Component {
                             />
                         </Input.Group>
                     </Col>
-                    <Col span={1}>审核员:</Col>
+                    <Col className="orderColStyle" span={1}><label>审核员:</label></Col>
                     <Col span={3}>
                         <Input.Group compact style={{width:"70%"}}>
                             <AutoComplete
@@ -65,26 +89,20 @@ export default class Index extends Component {
                 </Row>
                 <br/>
                 <Row>
-                    <Col span={1}><label>客户名称:</label></Col>
-                    <Col span={16}>
+                    <Col className="orderColStyle" span={1}><label>客户名称:</label></Col>
+                    <Col span={10}>
                         {/*客户*/}
-                        <Input.Group compact>
+                        <Input.Group compact >
                             <AutoComplete
-                                style={{ width: '70%' }}
+                                style={{ width: '90%' }}
                                 placeholder="请输入客户信息"
                                 options={[{ value: '北京北辰集团股份有限公司国家会议中心' }, { value: 'text 2' }]}
                             />
                         </Input.Group>
                     </Col>
-                    <Col span={1}/>
-                    <col span={2}>
-                        {/*<script async*/}
-                        {/*        id="chevereto-pup-src"*/}
-                        {/*        src="https://imgtu.com/sdk/pup.js"*/}
-                        {/*        data-url="https://imgtu.com/upload"*/}
-                        {/*        data-auto-insert="bbcode-embed-medium"></script>*/}
-                    </col>
-                    <Col span={1}/>
+
+                    <Col span={1}></Col>
+                    {reshow(1)}
                     <Col>
                         <Button type="primary" shape="round" icon={<UserSwitchOutlined />} size={size}>
                             提交申请

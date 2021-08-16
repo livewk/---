@@ -10,8 +10,8 @@ export default class App extends Component {
         return (
             <Switch>
                 {/* 注册路由 */}
-                <Route path="/admin" component={Admin}/>
                 <Route path="/login" component={Login}/>
+                <Route path="/" component={Admin}/>
                 <Redirect to="/login"/>
             </Switch>
         );

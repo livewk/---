@@ -2,7 +2,7 @@ import { Form, Input, Button, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined} from '@ant-design/icons';
 import '../../API'
 import {reqLogin} from "../../API";
-import {Redirect, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import memoryUtils from "../../utils/memoryUtils";
 import storageUtils from "../../utils/storageUtils";
 
@@ -24,7 +24,7 @@ const LoginHaixu  = () => {
             // 将数据持久化储存
             storageUtils.seveUser(user)
             // 跳转到管理界面 (不需要再回退回到登陆)
-            history.push('/admin')
+            history.push('/')
         }else{
             message.error("登入失败")
         }
