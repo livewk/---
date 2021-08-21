@@ -1,8 +1,8 @@
-import {buyerOrderDebtAction} from "../actions/breadcrumb_action";
+import {buyerOrderDebtAction} from "../actions/breadcrumb";
 
 const debt = true
 
-export default function buyerOrderDebt(preState=debt, action) {
+export default function buyerTableOrderHead(preState=debt, action) {
     const {data} = action
     if (data)
         return !preState

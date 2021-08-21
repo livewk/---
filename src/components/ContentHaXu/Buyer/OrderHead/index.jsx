@@ -14,37 +14,36 @@ export default class Index extends Component {
         size: 'large',
     };
 
+
+    orderId = ()=>{
+        return "HX00" + moment().format('YYYYMMDDHHmmss') + Math.round(Math.random()*100)
+    }
+
+    reshow = ()=>{
+        //    头部的显示状态
+        const {buyerType} = this.props
+        switch (buyerType) {
+            case  BUYER_ORDER_RESERVE:
+                return <><Col span={4}/></>
+            default:
+                return   (
+                    <>
+                        <Col className="orderColStyle" span={1}><label>付款状态:</label></Col>
+                        <Col span={3}>
+                            <Input.Group compact style={{width:"70%"}}>
+                                <AutoComplete
+                                    style={{ width: '100%' }}
+                                    placeholder="请输入或选择姓名"
+                                    options={[{ value: '已付款' }, { value: '未付款' }]}
+                                />
+                            </Input.Group>
+                        </Col>
+                    </>)
+        }
+    }
+
     render() {
         const { size } = this.state;
-
-        const reshow = ()=>{
-            //    头部的显示状态
-            const {buyerType} = this.props
-            switch (buyerType) {
-                case  BUYER_ORDER_RESERVE:
-                    return <><Col span={4}/></>
-                default:
-                    return   (
-                        <>
-                            <Col className="orderColStyle" span={1}><label>付款状态:</label></Col>
-                            <Col span={3}>
-                                <Input.Group compact style={{width:"70%"}}>
-                                    <AutoComplete
-                                        style={{ width: '100%' }}
-                                        placeholder="请输入或选择姓名"
-                                        options={[{ value: '已付款' }, { value: '未付款' }]}
-                                    />
-                                </Input.Group>
-                            </Col>
-                        </>)
-            }
-        }
-
-
-//验证一位数还是两位数
-        const orderId = ()=>{
-            return "HX00" + moment().format('YYYYMMDDHHmmss') + Math.round(Math.random()*100)
-        }
 
         return (
             <>
@@ -53,7 +52,7 @@ export default class Index extends Component {
                     <Col span={4}>
                         <Input
                             style={{width:"80%"}}
-                            value={orderId()}
+                            value={this.orderId()}
                             disabled ={false}/>
                     </Col>
                     <Col className="orderColStyle" span={1}><label>日期:</label></Col>
@@ -108,7 +107,7 @@ export default class Index extends Component {
                     </Col>
 
                     <Col span={1}></Col>
-                    {reshow()}
+                    {this.reshow()}
                     <Col>
                         <Button type="primary" shape="round" icon={<UserSwitchOutlined />} size={size}>
                             提交申请

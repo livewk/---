@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 // react路由
 import { Menu } from 'antd';
-import 'antd/dist/antd.css';
 import {withRouter} from 'react-router-dom'
+import PubSub from 'pubsub-js'
 import MyNavLink from "../MyNavLink";
-import {menuAction} from "../../redux/breadcrumb_action";
-import store from "../../redux/store";
 import menuList from "../../configs/menuConfig";
+import memoryUtils from "../../utils/memoryUtils";
+
 
 
 const { SubMenu } = Menu;
@@ -14,16 +14,33 @@ const { SubMenu } = Menu;
 class MenuHaiXu extends Component {
     state = {
         collapsed: false,
+        breadcrumb : memoryUtils.breadcrumb
     };
 
     funcX = (link, value)=>{
         // 传递面包屑的方法
-        const breadcrumb = { title: value, key: '1', link}
-        // redux
-        store.dispatch(menuAction(breadcrumb))
+        const breadcrumb_menu = { title: value, key: '1', link}
+        // 数据合并的方法
+        this.buyerReducer( breadcrumb_menu)
     }
+
+    buyerReducer = (breadcrumb)=> {
+        // 向内存中存入数据
+        const preState = memoryUtils.breadcrumb
+        // 去重复的操作
+        if (preState.find((item)=>item.title===breadcrumb.title))
+            return
+        // 改变key的值 取最后一个值进行改变
+        breadcrumb.key = ((preState[preState.length-1].key)*1+1).toString()
+        // 存入内容
+        memoryUtils.breadcrumb = [...preState,breadcrumb]
+        // 发送广播
+        PubSub.publish('reBreadcrumb')
+    }
+
     //
     getMenuNodes = (menuList, isFirst="")=>{
+        // 递归循环菜单
         const path = this.props.location.pathname
         return menuList.map(item=>{
             if (!item.children){
@@ -79,4 +96,10 @@ class MenuHaiXu extends Component {
     }
 }
 
+// // 容器组件
+// export default connect(
+//     state=>({}),
+//     {menuAction})
+//     // 包含UI组件
+//(withRouter(MenuHaiXu))
 export default withRouter(MenuHaiXu)

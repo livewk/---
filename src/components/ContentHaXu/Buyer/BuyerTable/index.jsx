@@ -1,7 +1,9 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import {Table, Button, Popconfirm, Form, AutoComplete} from 'antd';
+import {Table, Button, Popconfirm, Form, AutoComplete, Input} from 'antd';
 import '../../../../configs/buyerTableConstant'
-import {buyerOrderReserveConfig, tableConfig} from "../../../../configs/buyerTableConstant";
+import {BUYER_ORDER} from "../../../../configs/buyerTableConstant";
+import capitalAmount from "../../../../utils/numToChinese"
+
 const EditableContext = React.createContext(null);
 
 const EditableRow = ({
@@ -53,6 +55,8 @@ const EditableCell = ({
         });
     };
 
+
+
     const save = async () => {
         // 保存数据
         try {
@@ -65,26 +69,31 @@ const EditableCell = ({
             console.log('Save failed:', errInfo);
         }
     };
+
     // 结点信息
     let childNode = children;
     if (editable) {
         // 如果编辑功能打开状态，先判断子结点是否为编辑状态
-        childNode = editing ? (
+        childNode = editing ? ((dataIndex === 'productPrice' || dataIndex === 'productCount') ? (
+            // 数字验证
             <Form.Item
-                style={{
-                    margin: 0,
-                }}
-                // 将单元的key值赋值给name
-                name={dataIndex}
-                // 内容为空时显示*
+                style={{margin: 0,}}
+                name={dataIndex} // 将单元的key值赋值给name
                 rules={[
-                    {
-                        required: true,
-                        message: `${title} 不能为空值.`,
-                    },
-                ]}
-            >
-                {/*<Input.Group compact>*/}
+                    { required: true, message: `${title} 不能为空值.` },// 内容为空时显示*
+                    { pattern: /^[0-9.]+$/, message: '只能输入数字' },
+                ]}>
+
+                <Input ref={inputRef} onPressEnter={save} onBlur={save} prefix={dataIndex === 'productPrice' ? "￥":null}/>
+            </Form.Item>
+        ) :(
+            // 表单验证
+            <Form.Item
+                style={{ margin: 0, }}
+                name={dataIndex}  // 将单元的key值赋值给name
+                rules={[
+                    { required: true, message: `${title} 不能为空值.` },// 内容为空时显示*
+                ]}>
                     <AutoComplete
                         // 是否有边框
                         // bordered={false}
@@ -95,9 +104,8 @@ const EditableCell = ({
                         onPressEnter={save}
                         onBlur={save}
                     />
-                {/*</Input.Group>*/}
             </Form.Item>
-        ) : (
+        )) : (
             <div
                 className="editable-cell-value-wrap"
                 style={{
@@ -115,17 +123,6 @@ const EditableCell = ({
     return <td {...restProps}>{childNode}</td>;
 };
 
-const confirmType = (type, record)=>{
-    // 确认传送的类型
-    switch (type) {
-        case "":
-        default:
-    }
-
-    return <Popconfirm title="确定要删除该行?" onConfirm={() => this.handleDelete(record.key)}>
-        <a>删除</a>
-    </Popconfirm>
-}
 
 export default class BuyerTable extends React.Component {
 
@@ -148,6 +145,8 @@ export default class BuyerTable extends React.Component {
 
             ],
             count: 1,
+            selectedRowKeys:[],
+            isline: true//store.getState(),
         };
         // 表格的列表头设置
         this.columns = [
@@ -197,6 +196,9 @@ export default class BuyerTable extends React.Component {
                 dataIndex: 'productPrice',
                 width: '6%',
                 editable: true,
+                render:(text, record)=>{
+                    return "￥" + text || '0';
+                }
 
             },
             {
@@ -206,11 +208,14 @@ export default class BuyerTable extends React.Component {
                 render: (_, record) => {
                     const {dataSource} = this.state
                     // 乘法
-                    const sub = dataSource.map((item) => {
-                        if (item.key === record.key)
-                        return item.productCount * 1 * item.productPrice * 1
+                    let sub = 0
+                    dataSource.map((item) => {
+                        if (item.key === record.key){
+                            sub += ((item.productCount*1)*(item.productPrice * 1))
+                        }
                     })
-                    return <label>{sub}</label>
+                    return "￥" + sub.toFixed(3)|| 0
+
                 },
             },
             {
@@ -218,18 +223,43 @@ export default class BuyerTable extends React.Component {
                 dataIndex: 'remark',
                 width: '20%',
                 editable: true,
+                render:(text, record)=>{
+                    if (record.id === "合计"){
+                        return "";
+                    }else {
+                        return text || '-';
+                    }
+                }
+            },
+            {
+                title: '付款状态',
+                dataIndex: 'productDebt',
+                dropDownData : [{ value: '已付款' }, { value: '未付款' }],
+                width: '6%',
+                // 列是否可见
+                responsive: this.props.buyerType===BUYER_ORDER ? false:[],
+                editable: true,
+                render:(text, record)=>{
+                    return text || '已付款';
+
+                }
             },
             {
                 title: '操作',
                 dataIndex: 'operation',
                 width: '10%',
-                render: (_, record) =>
-                    this.state.dataSource.length >= 1 ? (
-                        <Popconfirm title="确定要删除该行?" onConfirm={() => this.handleDelete(record.key)}>
-                            <a>删除</a>
-                        </Popconfirm>
-                    ) : null,
-            },
+                render:(text, record)=> {
+                    if (record.id === "合计") {
+                        return "";
+                    } else {
+                        return this.state.dataSource.length >= 1 ? (
+                            <Popconfirm title="确定要删除该行?" onConfirm={() => this.handleDelete(record.key)}>
+                                <a>删除</a>
+                            </Popconfirm>
+                        ) : null
+                    }
+                }
+            }
         ];
 
     }
@@ -241,7 +271,9 @@ export default class BuyerTable extends React.Component {
             dataSource: dataSource.filter((item) => item.key !== key),
         });
     };
+
     handleAdd = () => {
+        // 添加行
         const { count, dataSource } = this.state;
         const newData = {
             key: count,
@@ -265,26 +297,23 @@ export default class BuyerTable extends React.Component {
         const index = newData.findIndex((item) => row.key === item.key);
         const item = newData[index];
         newData.splice(index, 1, { ...item, ...row });
-        this.setState({
-            dataSource: newData,
-        });
+        this.setState({ dataSource: newData,});
+    };
+
+    onSelectChange = selectedRowKeys => {
+        // 点击选择后的 ，
+        const newSelectedKey = selectedRowKeys.filter(item => item !== "subTotal" )
+        this.setState({ selectedRowKeys:newSelectedKey });
     };
 
     render() {
-        const { dataSource } = this.state;
-        // 加载两个方法
-        const components = {
-            body: {
-                row: EditableRow,
-                cell: EditableCell,
-            },
+        const { dataSource, selectedRowKeys } = this.state;
+        const components = { body: { row: EditableRow, cell: EditableCell, }, // 加载两个方法
         };
+
         const columns = this.columns.map((col) => {
-            if (!col.editable) {
-                return col;
-            }
-            // 向EditableCell 传递参数
-            return {
+            if (!col.editable) return col;         // 判断是否可以编辑
+            return {  // 向EditableCell 传递参数
                 ...col,
                 onCell: (record) => ({
                     record,
@@ -296,24 +325,56 @@ export default class BuyerTable extends React.Component {
                 }),
             };
         });
+
+        const rowSelection = {            // 加载选择行的数组和方法
+            selectedRowKeys,
+            onChange: this.onSelectChange,
+        };
+
         return (
-            <div>
-                <Button
-                    onClick={this.handleAdd}
-                    type="primary"
-                    style={{
-                        marginBottom: 16,
-                        marginTop: 16,
-                    }}
-                >
-                    添加一行
-                </Button>
+            <div style={{width:"100%"}}>
                 <Table
                     components={components}
                     rowClassName={() => 'editable-row'}
+                    rowSelection={this.props.buyerType===BUYER_ORDER ?rowSelection : null}  // 选择框
                     bordered
-                    dataSource={dataSource}
-                    columns={columns}
+                    dataSource={dataSource}  // 行的数据
+                    columns={columns}  // 行的样式
+                    size="small"
+                    pagination={{pageSize:9}}   // 分页
+                    summary={pageData => {
+                        // 汇总
+                        let totalPrice = 0;
+                        let totalAll = 0;
+
+                        pageData.forEach(({ productCount, productPrice }) => {
+                            totalPrice += productCount*productPrice*1;
+                        });
+
+                        dataSource.map(({productCount, productPrice})=>{
+                            totalAll += productCount*productPrice*1
+                        });
+
+
+                        return (    // 总结行
+                        <Table.Summary fixed>
+                            <Table.Summary.Row>
+                                <Table.Summary.Cell colSpan={12}>
+                                    <Button onClick={this.handleAdd} type="dashed" block > 添加一行 </Button>
+                                </Table.Summary.Cell>
+                            </Table.Summary.Row><Table.Summary.Row>
+                                <Table.Summary.Cell colSpan={2}>小计：</Table.Summary.Cell>
+                                <Table.Summary.Cell colSpan={6}>{capitalAmount(totalPrice)}</Table.Summary.Cell>
+                                <Table.Summary.Cell index={7}>{totalPrice}</Table.Summary.Cell>
+                                <Table.Summary.Cell colSpan={3}></Table.Summary.Cell>
+                            </Table.Summary.Row>
+                            <Table.Summary.Row>
+                                <Table.Summary.Cell colSpan={2}>总计:</Table.Summary.Cell>
+                                <Table.Summary.Cell colSpan={4}>{capitalAmount(totalAll)}</Table.Summary.Cell>
+                                <Table.Summary.Cell colSpan={6}>{totalAll}</Table.Summary.Cell>
+                            </Table.Summary.Row>
+                        </Table.Summary>
+                    )}}
                 />
             </div>
         );

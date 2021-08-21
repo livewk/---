@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
+import OldPrice from "../../components/ContentHaXu/Buyer/OldPrice";
 
 class OldBuyerPrice extends Component {
     render() {
         return (
             <div>
-                往期价格
+                <OldPrice />
             </div>
         );
     }

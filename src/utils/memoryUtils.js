@@ -3,4 +3,6 @@
  */
 export default {
     user:{},  // 保存登入的状态
+    breadcrumb:[{ title: '首页', key: '1', link: '/home'}]
 }
+

@@ -24,6 +24,7 @@ import Post from "../../Pages/User/Post";
 import Users from "../../Pages/User/Users";
 import Salary from "../../Pages/User/Salary";
 import Checking from "../../Pages/User/Checking";
+import WarehouseOrder from "../../Pages/Warehouse/WarehouseOrder";
 
 
 export default class ContentHaXu extends Component {
@@ -41,7 +42,7 @@ export default class ContentHaXu extends Component {
                     <Route path="/buyerOrderInfo" component={BuyerOrderInfo}/>
                     <Route path="/OldBuyerPrice" component={OldBuyerPrice}/>
                     <Route path="/WarehouseOrderReserve" component={WarehouseOrderReserve}/>
-                    <Route path="/WarehouseOrder" component={BuyerOrder}/>
+                    <Route path="/WarehouseOrder" component={WarehouseOrder}/>
                     <Route path="/WarehouseOrders" component={WarehouseOrders}/>
                     <Route path="/WarehouseOrderInfo" component={WarehouseOrderInfo}/>
                     <Route path="/SalesOrderReserve" component={SalesOrderReserve}/>
